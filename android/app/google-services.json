@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "436448242022",
+    "project_id": "karaoke-e6513",
+    "storage_bucket": "karaoke-e6513.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436448242022:android:a5c48a4b1a52ae030bc0a7",
+        "android_client_info": {
+          "package_name": "com.example.karaoke_form"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5poCDIWgib71q_ZaMzhQ5qxavJULgAlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
