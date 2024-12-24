@@ -15,72 +15,62 @@ class _MainPageState extends State<MainPage> {
   final TextEditingController requestController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 60,
-              ),
-              TextFieldWithTitleWidget(
-                title: "닉네임(필수)",
-                controller: nicknameController,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFieldWithTitleWidget(
-                title: "가수(필수)",
-                controller: singerController,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFieldWithTitleWidget(
-                title: "노래제목(필수)",
-                controller: songTitleController,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFieldWithTitleWidget(
-                title: "요청사항(선택)",
-                controller: requestController,
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () {
-                  _onSubmit(context);
-                },
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 70, 157, 80),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "제출하기",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 60),
+            TextFieldWithTitleWidget(
+              title: "닉네임(필수)",
+              controller: nicknameController,
+            ),
+            const SizedBox(height: 20),
+            TextFieldWithTitleWidget(
+              title: "가수(필수)",
+              controller: singerController,
+            ),
+            const SizedBox(height: 20),
+            TextFieldWithTitleWidget(
+              title: "노래제목(필수)",
+              controller: songTitleController,
+            ),
+            const SizedBox(height: 20),
+            TextFieldWithTitleWidget(
+              title: "요청사항(선택)",
+              controller: requestController,
+            ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                _onSubmit(context);
+              },
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 70, 157, 80),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: Text(
+                    "제출하기",
+                    style: TextStyle(
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 60,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 60),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   void _onSubmit(BuildContext context) {
     if (nicknameController.text.isEmpty ||
