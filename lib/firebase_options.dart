@@ -60,4 +60,5 @@ class DefaultFirebaseOptions {
     authDomain: 'karaoke-e6513.firebaseapp.com',
     storageBucket: 'karaoke-e6513.firebasestorage.app',
   );
+
 }
