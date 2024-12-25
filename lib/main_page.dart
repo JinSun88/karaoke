@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -27,21 +28,25 @@ class _MainPageState extends State<MainPage> {
               TextFieldWithTitleWidget(
                 title: "닉네임(필수)",
                 controller: nicknameController,
+                hint: "ex) 금개",
               ),
               const SizedBox(height: 20),
               TextFieldWithTitleWidget(
                 title: "가수(필수)",
                 controller: singerController,
+                hint: "ex) 체리필터",
               ),
               const SizedBox(height: 20),
               TextFieldWithTitleWidget(
                 title: "노래제목(필수)",
                 controller: songTitleController,
+                hint: "ex) 오리날다",
               ),
               const SizedBox(height: 20),
               TextFieldWithTitleWidget(
                 title: "요청사항(선택)",
                 controller: requestController,
+                hint: "ex) 2키 낮춰주세요.",
               ),
               const SizedBox(height: 60),
               GestureDetector(
@@ -51,10 +56,10 @@ class _MainPageState extends State<MainPage> {
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 70, 157, 80),
+                    color: const Color.fromARGB(255, 70, 157, 80),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       "제출하기",
                       style: TextStyle(
@@ -88,12 +93,12 @@ class _MainPageState extends State<MainPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(''),
-          content: Text('필수 사항을 입력해주세요.'),
+        return CupertinoAlertDialog(
+          title: const Text(''),
+          content: const Text('필수 사항을 입력해주세요.'),
           actions: <Widget>[
-            TextButton(
-              child: Text('확인'),
+            CupertinoDialogAction(
+              child: const Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -109,20 +114,23 @@ class _MainPageState extends State<MainPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(''),
-          content: Text('제출하시겠습니까?'),
+        return CupertinoAlertDialog(
+          title: const Text(''),
+          content: const Text('제출하시겠습니까?'),
           actions: <Widget>[
-            TextButton(
-              child: Text('취소'),
+            CupertinoDialogAction(
+              child: const Text('취소'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
-            TextButton(
-              child: Text('확인'),
+            CupertinoDialogAction(
+              child: const Text('확인'),
               onPressed: () {
-                _addDataToFirestore();
+                // Firestore에 데이터 추가
+                _getOrder().then((order) => _addDataToFirestore(order));
+
+                // 다이얼로그 닫기
                 Navigator.of(context).pop();
               },
             ),
@@ -132,14 +140,16 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Future<void> _addDataToFirestore() async {
+  Future<void> _addDataToFirestore(int order) async {
     try {
       await _firestore.collection('reservation').add({
         'nickname': nicknameController.text,
         'singer': singerController.text,
         'songTitle': songTitleController.text,
         'request': requestController.text,
+        'order': order,
       });
+      // 입력된 텍스트 필드 초기화
       nicknameController.text = "";
       singerController.text = "";
       songTitleController.text = "";
@@ -148,16 +158,38 @@ class _MainPageState extends State<MainPage> {
       print(e);
     }
   }
+
+  Future<int> _getOrder() async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('reservation')
+          .orderBy('order', descending: true)
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        return 0;
+      } else {
+        var data = querySnapshot.docs.first.data() as Map<String, dynamic>;
+        return data['order'] + 1;
+      }
+    } catch (e) {
+      print("Error fetching order: $e");
+      return 0;
+    }
+  }
 }
 
 class TextFieldWithTitleWidget extends StatelessWidget {
   final String title;
   final TextEditingController controller;
+  final String hint;
 
   const TextFieldWithTitleWidget({
     super.key,
     required this.title,
     required this.controller,
+    required this.hint,
   });
 
   @override
@@ -173,7 +205,8 @@ class TextFieldWithTitleWidget extends StatelessWidget {
         TextField(
           controller: controller,
           decoration: InputDecoration(
-            border: OutlineInputBorder(),
+            hintText: hint,
+            border: const OutlineInputBorder(),
           ),
         ),
       ],
