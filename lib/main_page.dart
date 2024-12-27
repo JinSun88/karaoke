@@ -82,20 +82,20 @@ class _MainPageState extends State<MainPage> {
         singerController.text.isEmpty ||
         songTitleController.text.isEmpty) {
       // 필드 중 하나라도 비어 있으면 경고 표시
-      _showErrorAlert(context);
+      _showAlert(context, '필수 사항을 입력해주세요.');
     } else {
       // 모든 필드가 입력되었으면 확인 알림 표시
       _showSubmitAlert(context);
     }
   }
 
-  void _showErrorAlert(BuildContext context) {
+  void _showAlert(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
           title: const Text(''),
-          content: const Text('필수 사항을 입력해주세요.'),
+          content: Text(message),
           actions: <Widget>[
             CupertinoDialogAction(
               child: const Text('확인'),
@@ -111,8 +111,9 @@ class _MainPageState extends State<MainPage> {
 
   // 시스템 알림 다이얼로그를 띄우는 함수
   void _showSubmitAlert(BuildContext context) {
+    final parentContext = Navigator.of(context).context;
     showDialog(
-      context: context,
+      context: parentContext,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
           title: const Text(''),
@@ -128,8 +129,15 @@ class _MainPageState extends State<MainPage> {
               child: const Text('확인'),
               onPressed: () {
                 // Firestore에 데이터 추가
-                _getOrder().then((order) => _addDataToFirestore(order));
-
+                _getOrder().then((order) {
+                  return _addDataToFirestore(order);
+                }).then((_) {
+                  // 데이터 추가 후 알림 표시
+                  _showAlert(parentContext, "제출되었습니다.");
+                }).catchError((e) {
+                  // 오류 처리
+                  print("Error occurred: $e");
+                });
                 // 다이얼로그 닫기
                 Navigator.of(context).pop();
               },
